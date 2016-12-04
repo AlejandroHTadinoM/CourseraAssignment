@@ -1,25 +1,58 @@
 (function () {
 	'use strict';
 
-	angular.module('LunchCheck', [])
-	.controller('LunchCheckController', LunchCheckController);
+	angular.module('ShoppingListCheckOff', [])
+	.controller('ToBuyController', ToBuyController)
+	.controller('AlreadyBoughtController', AlreadyBoughtController)
+	.service('ShoppingListCheckOffService', ShoppingListCheckOffService);
 
-	LunchCheckController.$injector = ['$scope'];
+	ToBuyController.$inject = ['ShoppingListCheckOffService'];
+	function ToBuyController(ShoppingListCheckOffService) {
+		var ToBuyCtrl = this;
 
-	function LunchCheckController($scope) {
-		$scope.luncList = [];
-		$scope.message = '';
+		ToBuyCtrl.buyItems = ShoppingListCheckOffService.getBuyItems();
 
-		$scope.checkList = function(luncList) {
-			var str = luncList.split(',');
-
-			if (str.length == 0) {
-				$scope.message = "Please enter data first";
-			} else if (str.length > 3) {
-				$scope.message = "Too much!";
-			} else {
-				$scope.message = "Enjoy!";
-			};
+		ToBuyCtrl.CheckItem = function () {
+			ShoppingListCheckOffService.CheckItem(ToBuyCtrl.itemName, ToBuyCtrl.quantity, ToBuyCtrl.index);
 		};
-	}
+	};
+
+	AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+	function AlreadyBoughtController(ShoppingListCheckOffService) {
+		var AlreadyBoughtCtrl = this;
+
+		AlreadyBoughtCtrl.boughtItems = ShoppingListCheckOffService.getBoughtItems();
+	};
+
+	function ShoppingListCheckOffService() {
+		var service = this;
+
+		var buyItems = [
+			{name: 'Coockies', quantity: '10 bags'},
+			{name: 'Cereal', quantity: '4 boxes'},
+			{name: 'Orange juice', quantity: '4 botles'},
+			{name: 'Soda drinks', quantity: '2 botles'},
+			{name: 'Cerael bars', quantity: '10 bags'},
+			{name: 'Milk', quantity: '4 botles'}
+		];
+
+		var boughtItems = [];
+
+		service.CheckItem = function (itemName, quantity, index) {
+			var item = {
+				name: itemName,
+				quantity: quantity
+			};
+			boughtItems.push(item);
+			buyItems.splice(index, 1);	
+		};
+
+		service.getBuyItems = function () {
+			return buyItems;
+		};
+
+		service.getBoughtItems = function () {
+			return boughtItems;
+		};
+	};
 })();
