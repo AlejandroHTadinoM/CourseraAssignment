@@ -12,8 +12,8 @@
 
 		ToBuyCtrl.buyItems = ShoppingListCheckOffService.getBuyItems();
 
-		ToBuyCtrl.CheckItem = function () {
-			ShoppingListCheckOffService.CheckItem(ToBuyCtrl.itemName, ToBuyCtrl.quantity, ToBuyCtrl.index);
+		ToBuyCtrl.CheckItem = function (index) {
+			ShoppingListCheckOffService.CheckItem(index);
 		};
 	};
 
@@ -38,13 +38,11 @@
 
 		var boughtItems = [];
 
-		service.CheckItem = function (itemName, quantity, index) {
-			var item = {
-				name: itemName,
-				quantity: quantity
-			};
+		service.CheckItem = function (index) {
+			var item = buyItems[index];
 			boughtItems.push(item);
-			buyItems.splice(index, 1);	
+			buyItems.splice(index, 1);
+
 		};
 
 		service.getBuyItems = function () {
